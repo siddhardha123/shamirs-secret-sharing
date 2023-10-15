@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/', userRouter);
-mongoose.connect('', {
+mongoose.connect('mongodb+srv://sidvarma:1234@cluster0.ladss.mongodb.net/?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
@@ -23,6 +23,6 @@ db.once('open', () => {
     console.log('Connected to MongoDB Atlas');
 });
 
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log("connected....");
 });

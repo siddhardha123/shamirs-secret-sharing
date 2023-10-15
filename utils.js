@@ -32,18 +32,30 @@ const createNewAccount = async ({share_count,threshold}) => {
    }
 }
 const checkForPasswordMatch = async(correctPass,sentPass,shares) => {
-   const recoveredKey =  await _recoverKey(shares)
-   const newPass = CryptoJS.AES.encrypt(sentPass,recoveredKey).toString();
-   if(newPass === correctPass){
+    const newShares = shares.map(base64String => Buffer.from(base64String, 'base64'));
+    const recoveredKey =  await _recoverKey(newShares)
+    const decryptedPass = simpleDecrypt(correctPass,recoveredKey)
+   if(decryptedPass === sentPass){
        return true
    }
    return false
 }
 const isUserNameTaken = async (userName) => {
-     return  User.findOne({ userName });
+      return  User.findOne({ user_name : userName });
 };
 
-module.exports = {createNewAccount,isUserNameTaken,checkForPasswordMatch}
+const  simpleEncrypt = (input, secret) => {
+    let result = '';
+    for (let i = 0; i < input.length; i++) {
+        result += String.fromCharCode(input.charCodeAt(i) ^ secret.charCodeAt(i % secret.length));
+    }
+    return result;
+}
+function simpleDecrypt(input, secret) {
+    return simpleEncrypt(input, secret); // XOR operation is its own inverse
+}
+
+module.exports = {createNewAccount,isUserNameTaken,checkForPasswordMatch,simpleEncrypt,simpleDecrypt}
 
 
 

@@ -1,4 +1,4 @@
-const {createNewAccount,isUserNameTaken,checkForPasswordMatch} = require("./utils");
+const {createNewAccount,isUserNameTaken,checkForPasswordMatch, simpleEncrypt} = require("./utils");
 const crypto = require('crypto')
 const CryptoJS = require('crypto-js');
 const {isValidRegisterData, isValidLoginData} = require('./validator')
@@ -10,14 +10,15 @@ const register = async (req,res) => {
         }
         const  validatedData = await isValidRegisterData(req.body)
         const  accountData=   await createNewAccount({...validatedData})
-        validatedData.password = CryptoJS.AES.encrypt(validatedData.password,accountData.pv).toString();
+        validatedData.password = simpleEncrypt(validatedData.password,accountData.pv).toString()
         const user = await isUserNameTaken(validatedData.user_name);
         if(user !== null){
             res.json({"message" : "user already exists"})
+            return
         }
         const newUser = new User(validatedData);
         await newUser.save();
-        res.status(200).json(newUser)
+        res.status(200).json({"name" : newUser.name,"shares" : accountData.shares})
     }catch (e) {
         console.log(e)
     }
@@ -30,9 +31,7 @@ const login = async(req,res) => {
        const user = await isUserNameTaken(validatedData.user_name)
        if(user === null){
            res.json({"message" : "user doesn't exist"})
-       }
-       if(validatedData.shares.length !== user.threshold){
-           res.json({"message" : "Less than Threshold"})
+           return
        }
        const isCorrect = await checkForPasswordMatch(user.password,validatedData.password,validatedData.shares)
        if(isCorrect){
@@ -47,4 +46,4 @@ const login = async(req,res) => {
 
 }
 
-module.exports = {register}
+module.exports = {register,login}
