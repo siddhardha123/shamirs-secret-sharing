@@ -9,5 +9,7 @@ router.get('/', (req, res) => {
 
 router.post('/register', controller.register)
 router.post('/login', controller.login)
+router.post('/send-otp',controller.sendOtp)
+// router.post('/validate-otp',controller.validateOtp)
 
 module.exports = router;

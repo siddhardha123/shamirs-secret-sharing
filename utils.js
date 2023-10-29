@@ -2,6 +2,7 @@ const sss = require('shamirs-secret-sharing')
 const EC = require('elliptic').ec;
 const User = require('./Models/User.schema');
 const CryptoJS = require('crypto-js');
+const nodemailer = require('nodemailer');
 // {userName,password,shareCount,threshold}
 const _createPrivateKeyPair = async ()=>{
     const ec = new EC('secp256k1');
@@ -55,7 +56,17 @@ function simpleDecrypt(input, secret) {
     return simpleEncrypt(input, secret); // XOR operation is its own inverse
 }
 
-module.exports = {createNewAccount,isUserNameTaken,checkForPasswordMatch,simpleEncrypt,simpleDecrypt}
+const sendMail = async (email, otp) => {
+    const mailOptions = {
+        from: 'otpsender12345@gmail.com',
+        to: email,
+        subject: 'Your Subject',
+        text: `Your OTP is: ${otp}`,
+    };
+
+    return  transporter.sendMail(mailOptions);
+};
+module.exports = {createNewAccount,isUserNameTaken,checkForPasswordMatch,simpleEncrypt,simpleDecrypt,sendMail}
 
 
 

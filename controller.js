@@ -1,7 +1,8 @@
-const {createNewAccount,isUserNameTaken,checkForPasswordMatch, simpleEncrypt} = require("./utils");
+const {createNewAccount,isUserNameTaken,checkForPasswordMatch, simpleEncrypt, sendMail} = require("./utils");
 const crypto = require('crypto')
 const CryptoJS = require('crypto-js');
-const {isValidRegisterData, isValidLoginData} = require('./validator')
+const {isValidRegisterData, isValidLoginData, isValidReset, isValidSendOtp} = require('./validator')
+const nodemailer = require('nodemailer');
 const User = require('./Models/User.schema');
 const register = async (req,res) => {
     try{
@@ -46,4 +47,29 @@ const login = async(req,res) => {
 
 }
 
-module.exports = {register,login}
+
+
+const sendOtp = async(req,res) => {
+    const validatedData = isValidSendOtp(req.body)
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    try {
+        const email = validatedData.email
+        await User.findOneAndUpdate({ email }, { otp }, { upsert: true });
+        const mailInfo = await sendMail(email,otp)
+        res.json(mailInfo)
+        //write a function send mail to the user
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to send OTP.');
+    }
+}
+
+const validateOtp = async(req,res) => {
+     // validate the otp data
+
+     // make a read request to the db and check if the otp matches the user
+
+     // reset his shares and update the entry in the DB
+}
+
+module.exports = {register,login,sendOtp}
