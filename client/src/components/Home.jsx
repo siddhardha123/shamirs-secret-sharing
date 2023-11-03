@@ -46,11 +46,11 @@ const LandingPage = () => {
                 spacing={4}
                 align="center"
                 justify="center"
-                height="80vh"
+                height="95vh"
                 background="linear-gradient(to bottom, #30D5C8, #1A7A76)"
                 color="white"
             >
-                <Heading fontSize="4xl" textAlign="center">
+                <Heading fontSize="6xl" textAlign="center" font={'Sans-serif'}>
                     MULTI SPLIT ENCRYPTION SCHEME FOR PASSWORD AND RECOVERY
                 </Heading>
                 <Text fontSize="xl" textAlign="center">
