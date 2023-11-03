@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {Flex, Box, FormControl, FormLabel, Input, Button, Heading, Grid, Link, GridItem} from '@chakra-ui/react';
+import {Flex, Box, FormControl, FormLabel, Input, Button, Heading, Grid, GridItem} from '@chakra-ui/react';
 import { register } from "../services.js";
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 const SignUp = () => {
   const [formData, setFormData] = useState({
