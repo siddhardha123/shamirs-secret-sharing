@@ -41,8 +41,8 @@ const checkForPasswordMatch = async(correctPass,sentPass,shares) => {
    }
    return false
 }
-const isUserNameTaken = async (userName) => {
-      return  User.findOne({ user_name : userName });
+const isUserNameTaken = async (email) => {
+      return  User.findOne({ email : email });
 };
 
 const  simpleEncrypt = (input, secret) => {

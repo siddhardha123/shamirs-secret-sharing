@@ -15,7 +15,7 @@ const register = async (req,res) => {
         const  validatedData = await isValidRegisterData(req.body)
         const  accountData=   await createNewAccount({...validatedData})
         validatedData.password = simpleEncrypt(validatedData.password,accountData.pv).toString()
-        const user = await isUserNameTaken(validatedData.user_name);
+        const user = await isUserNameTaken(validatedData.email);
         if(user !== null){
             return res.json({"message" : "user already exists"})
         }
@@ -31,7 +31,7 @@ const register = async (req,res) => {
 const login = async(req,res) => {
    try{
        const validatedData = await isValidLoginData(req.body)
-       const user = await isUserNameTaken(validatedData.user_name)
+       const user = await isUserNameTaken(validatedData.email)
        if(user === null){
            res.json({"message" : "user doesn't exist"})
            return
