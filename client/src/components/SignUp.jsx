@@ -19,15 +19,23 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
+      console.log(formData)
       const response = await register({ ...formData });
-      if(response.message === ''){
+      if(response.message){
          toast.error(response.message)
       }
       if(response.name === formData.name){
+        toast.success(`welcome ${response.name}`)
         const links = response.shares.map((share, index) => {
           const blob = new Blob([share], { type: 'text/plain' });
           const url = window.URL.createObjectURL(blob);
-          return { url, filename: `share_${index + 1}.txt` };
+          const now = new Date();
+          const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1)
+              .toString()
+              .padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}`;
+
+          const filename = `share_${index + 1}_${timestamp}.txt`;
+          return { url, filename: filename };
         });
 
         setDownloadLinks(links);
@@ -111,11 +119,12 @@ const SignUp = () => {
               Sign Up
             </Button>
           </form>
-          <ToastContainer />
+
           <Box mt={2} textAlign="center">
             <span>Already have an account? </span>
             <Link to="/login">Login</Link>
           </Box>
+          <ToastContainer />
 
 
         </Box>

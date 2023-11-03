@@ -6,20 +6,22 @@ const nodemailer = require('nodemailer');
 const User = require('./Models/User.schema');
 const register = async (req,res) => {
     try{
-        if(req.body.threshold > req.body.share_count){
-            res.json({"message" : "threshold cannot be greater than total shares"})
+        const threshold = parseInt(req.body.threshold);
+        const shareCount = parseInt(req.body.share_count);
+
+        if (threshold > shareCount) {
+           return  res.json({ "message": "threshold cannot be greater than total shares" });
         }
         const  validatedData = await isValidRegisterData(req.body)
         const  accountData=   await createNewAccount({...validatedData})
         validatedData.password = simpleEncrypt(validatedData.password,accountData.pv).toString()
         const user = await isUserNameTaken(validatedData.user_name);
         if(user !== null){
-            res.json({"message" : "user already exists"})
-            return
+            return res.json({"message" : "user already exists"})
         }
         const newUser = new User(validatedData);
         await newUser.save();
-        res.status(200).json({"name" : newUser.name,"shares" : accountData.shares})
+        res.json({"name" : newUser.name,"shares" : accountData.shares})
     }catch (e) {
         console.log(e)
     }
